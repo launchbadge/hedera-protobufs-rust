@@ -14,8 +14,3 @@ http = "0.2.4"
 [build-dependencies]
 tonic-build = "0.4.2"
 anyhow = "1.0.41"
-
-# client binary
-[[bin]]
-name = "client"
-path = "src/client.rs"

@@ -9,8 +9,10 @@ tonic = { version="0.4.3", features=["prost"] }
 serde = { version="1.0.126", features=["derive"] }
 prost = "0.7.0"
 tokio = { version="1.8.0", features=["full"] }
-http = "0.2.4"
 
 [build-dependencies]
 tonic-build = "0.4.2"
+anyhow = "1.0.41"
+
+[dev-dependencies]
 anyhow = "1.0.41"

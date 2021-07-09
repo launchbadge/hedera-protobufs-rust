@@ -60,6 +60,7 @@ fn main() -> anyhow::Result<()> {
     create_dir_all(&streams_out_dir)?;
 
     tonic_build::configure()
+        .extern_path(".proto.Fraction", "crate::services::Fraction")
         .extern_path(".proto.Timestamp", "crate::services::Timestamp")
         .extern_path(".proto.AccountID", "crate::services::AccountId")
         .extern_path(".proto.TokenID", "crate::services::TokenId")

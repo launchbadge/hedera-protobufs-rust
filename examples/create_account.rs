@@ -5,7 +5,7 @@ use serde_json;
 use std::fs::File;
 use std::io::BufReader;
 use serde::Deserialize;
-use hedera-crypto::PrivateKey;
+use hedera_crypto::PrivateKey;
 
 #[derive(Deserialize, Debug)]
 struct NewAccount {
@@ -41,13 +41,20 @@ async fn main() -> anyhow::Result<()> {
     //     serde_json::from_str("/home/leahwhalen/Documents/hedera-protobufs-rust/CONFIG_FILE.json").expect("JSON was not well-formatted");
 
     println!("{:?}", config);
-    let key_to_bytes = PrivateKey::to_bytes(&config.operator.privateKey);
+    let key_bytes = config.operator.privateKey.as_bytes();
+
+    let key_to_bytes = PrivateKey::from_bytes(&key_bytes).unwrap();
 
     // https://github.com/hashgraph/hedera-protobufs/blob/main/services/CryptoGetAccountBalance.proto#L35
 
 
     let data = services::TransactionBody {
-        // declare new enum Data
+        transactionID : TransactionID  = 1, // The ID for this transaction, which includes the payer's account (the account paying the transaction fee). If two transactions have the same transactionID, they won't both have an effect
+        nodeAccountID : AccountID  = config.operator.accountId, // The account of the node that submits the client's transaction to the network
+        transactionFee : u64 = 3, // The maximum transaction fee the client is willing to pay
+        transactionValidDuration : Duration = 4, //The transaction is invalid if consensusTimestamp > transactionID.transactionValidStart + transactionValidDuration
+        bool generateRecord = 5 [deprecated = true]; // Should a record of this transaction be generated? (A receipt is always generated, but the record is optional)
+        string memo
         data: Some(services::transaction_body::Data::CryptoCreateAccount (
             services::CryptoCreateTransactionBody {
                 key: Some( services::Key {

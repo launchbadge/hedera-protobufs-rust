@@ -91,7 +91,7 @@ async fn main() -> anyhow::Result<()> {
     };
 
     let new_account = services::TransactionBody {
-        transaction_id: Some(transaction_id),
+        transaction_id: Some(transaction_id.clone()),
         node_account_id: Some(node_account_id),
         transaction_fee: 10000000000000,
         transaction_valid_duration: Some(services::Duration { seconds: 120 }),
@@ -125,16 +125,29 @@ async fn main() -> anyhow::Result<()> {
         ..Default::default()
     };
 
-    // // https://github.com/hashgraph/hedera-protobufs/blob/main/services/CryptoService.proto#L52
+    // get response to creating the account
     let response = client.create_account(transaction).await?;
 
-    // // https://github.com/hashgraph/hedera-protobufs/blob/main/services/CryptoGetAccountBalance.proto#L47
-
+    // view account
     let t_response = Some(response);
     println!("{:#?}", t_response);
 
     // query the reciept
-    
+    let query = services::Query {
+        query: Some(services::query::Query::TransactionGetReceipt(
+            services::TransactionGetReceiptQuery {
+                header: None,
+                transaction_id: Some(transaction_id),
+                include_duplicates: false,
+            }
+        )),
+    };
+
+    // get the receipt
+    let receipt = client.get_transaction_receipts(query).await?;
+
+    // view receipt
+    println!("{:#?}", receipt);
 
     Ok(())
 }

@@ -1,8 +1,0 @@
-{
-  "operator": {
-    "accountId": "0.0.2104142",
-    "privateKey": "302e020100300506032b657004220420b70a547fb73704a6585f1879e4fe7396a9864d2381b1fe7fa3e42ec65e3f9245"
-  },
-  "network": "testnet",
-  "mirrorNetwork": "testnet"
-}

@@ -18,3 +18,4 @@ anyhow = "1.0.41"
 [dev-dependencies]
 anyhow = "1.0.41"
 hedera-crypto = { git = "ssh://git@github.com/launchbadge/hedera-crypto-rust.git", branch='main' }
+time = "0.2.27"

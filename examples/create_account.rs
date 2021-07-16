@@ -1,13 +1,14 @@
-use std::time::Duration;
+use anyhow::Error;
+use dotenv;
 use hedera_crypto::PrivateKey;
 use hedera_proto::services;
 use hedera_proto::services::crypto_service_client::CryptoServiceClient;
 use prost::Message;
 use serde::Deserialize;
 use serde_json;
-use std::fs::File;
-use std::io::BufReader;
 use std::str::FromStr;
+use std::time::Duration;
+use std::{env, fs};
 use time::OffsetDateTime;
 use tonic::transport::Channel;
 
@@ -15,13 +16,31 @@ use tonic::transport::Channel;
 struct NewAccount {
     operator: Operator,
     network: String,
-    mirrorNetwork: String,
 }
 
 #[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 struct Operator {
-    accountId: String,
-    privateKey: String,
+    account_id: String,
+    private_key: String,
+}
+
+fn get_new_account() -> anyhow::Result<NewAccount> {
+    let _ = dotenv::dotenv();
+    pretty_env_logger::try_init_timed()?;
+    let file_path = env::var("CONFIG_FILE").unwrap();
+    let contents = fs::read_to_string(file_path).expect("Something went wrong reading the file");
+    // Read the JSON contents of the file as an instance of 'NewAccount'
+    let config: NewAccount = serde_json::from_str(&contents)?;
+    Ok(config)
+}
+
+fn create_new_account_id(shard_num: i64, realm_num: i64, account_num: i64) -> services::AccountId {
+    services::AccountId {
+        shard_num,
+        realm_num,
+        account_num,
+    }
 }
 
 #[tokio::main]
@@ -33,34 +52,27 @@ async fn main() -> anyhow::Result<()> {
 
     let mut client = CryptoServiceClient::new(channel);
 
-    // Open the file in read-only mode with buffer.
-    let file = File::open("/home/leahwhalen/Documents/hedera-protobufs-rust/CONFIG_FILE.json")?;
-    let reader = BufReader::new(file);
-
     // Read the JSON contents of the file as an instance of 'NewAccount'
-    let config: NewAccount = serde_json::from_reader(reader)?;
+    let config: NewAccount = get_new_account().unwrap();
 
-    println!("{:?}", config);
     // Operator Keypair
-    let private_key = PrivateKey::from_str(&config.operator.privateKey)?;
+    let private_key = PrivateKey::from_str(&config.operator.private_key)?;
     let public_key = private_key.public_key().to_bytes();
 
     // Generated Keypair for New Account
     let private_key_generated = PrivateKey::generate();
     let public_key_generated = private_key_generated.public_key().to_bytes();
 
-    // Define and populate the structs for create account
-    let node_account_id = services::AccountId {
-        shard_num: 0,
-        realm_num: 0,
-        account_num: 3,
-    };
+    let operator_account_vec: Vec<&str> = config.operator.account_id.rsplit('.').collect();
 
-    let account_id = services::AccountId {
-        shard_num: 0,
-        realm_num: 0,
-        account_num: 2124655,
-    };
+    // Define and populate the structs for create account
+    let node_account_id = create_new_account_id(0, 0, 3);
+
+    let account_id = create_new_account_id(
+        operator_account_vec[0].parse::<i64>().unwrap(),
+        operator_account_vec[1].parse::<i64>().unwrap(),
+        operator_account_vec[2].parse::<i64>().unwrap(),
+    );
 
     // 90 day duration
     let duration = services::Duration { seconds: 7776000 };

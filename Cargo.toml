@@ -19,3 +19,5 @@ anyhow = "1.0.41"
 anyhow = "1.0.41"
 hedera-crypto = { git = "ssh://git@github.com/launchbadge/hedera-crypto-rust.git", branch='main' }
 time = "0.2.27"
+dotenv = "0.15.0"
+pretty_env_logger = "0.4.0"

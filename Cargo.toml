@@ -6,9 +6,10 @@ edition = "2018"
 
 [dependencies]
 tonic = { version="0.5.0", features=["prost"] }
-serde = { version="1.0.126", features=["derive"] }
+serde = { version="1.0.126", features=["derive"], optional = true }
 prost = "0.8.0"
 tokio = { version="1.8.0", features=["full"] }
+chrono = { version="0.4.19", optional = true }
 
 [build-dependencies]
 tonic-build = "0.5.0"
@@ -16,3 +17,6 @@ anyhow = "1.0.41"
 
 [dev-dependencies]
 anyhow = "1.0.41"
+
+[features]
+chrono-integration = ["chrono"]

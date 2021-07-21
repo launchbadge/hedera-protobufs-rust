@@ -1,7 +1,7 @@
 #![allow(non_camel_case_types)]
 #![allow(clippy::default_trait_access, clippy::doc_markdown)]
 
-#[cfg(feature = "chrono-integration")]
+#[cfg(feature = "chrono")]
 mod chrono_from_impls;
 
 pub mod services {

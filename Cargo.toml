@@ -17,6 +17,3 @@ anyhow = "1.0.41"
 
 [dev-dependencies]
 anyhow = "1.0.41"
-
-[features]
-chrono-integration = ["chrono"]

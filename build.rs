@@ -23,11 +23,11 @@ fn main() -> anyhow::Result<()> {
         .type_attribute("proto.ContractID", "#[derive(Eq, Hash)]");
 
     if cfg!(feature = "serde") {
+        //TODO: Ideally we'd apply to everything, but that didn't work, so new types are added here on an as-needed basis
         config = config
-            .type_attribute(".", "#[derive(serde::Serialize, serde::Deserialize)]")
             .type_attribute(
                 "proto.ResponseCodeEnum",
-                "#[serde(rename_all = \"SCREAMING_SNAKE_CASE\")]",
+                "#[derive(serde::Serialize, serde::Deserialize)] #[serde(rename_all = \"SCREAMING_SNAKE_CASE\")]",
             );
     }
 

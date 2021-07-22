@@ -1,4 +1,4 @@
-# Hedera™ Hashgraph Rust Protubufs
+# Hedera™ Hashgraph Rust Protobufs
 
 > Generated protobufs in Rust for interacting with Hedera Hashgraph: the official distributed
 > consensus platform built using the hashgraph consensus algorithm for fast,

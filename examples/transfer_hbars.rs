@@ -20,16 +20,18 @@ async fn main() -> anyhow::Result<()> {
 
     let mut client = CryptoServiceClient::new(channel);
 
+    // Hedera testnet account ID
     let account_id = &env::var("TESTNET_ID")?[4..10];
-    let new_account_id = 2139523;
 
+    //Operator keypair
     let my_account_private_key = PrivateKey::from_str(&env::var("TESTNET_PRIVATE_KEY")?)?;
     let my_account_public_key = my_account_private_key.public_key().to_bytes();
 
+    // Generated testnet ID and receiver account keypair
+    let new_account_id = 2139523;
     let new_account_private_key = [41, 107, 201, 102, 6, 19, 57, 84, 38, 112, 7, 118, 113, 57, 127, 150, 187, 146, 121, 192, 178, 52, 183, 23, 119, 175, 244, 207, 154, 79, 229, 203];
     let new_account_public_key  = [240, 217, 84, 212, 186, 42, 57, 229, 27, 90, 0, 28, 194, 215, 60, 221, 97, 227, 1, 218, 42, 166, 79, 167, 218, 107, 73, 148, 174, 231, 5, 245];
 
-    // Define and populate the structs for create account
     let node_account_id = services::AccountId {
         shard_num: 0,
         realm_num: 0,
@@ -78,7 +80,7 @@ async fn main() -> anyhow::Result<()> {
     };
     println!("The new account's balance before transfer is: {} tℏ", response.balance);
 
-    // Transfer hbar
+    // transfer hbar
     let transfer_transaction_data = services::transaction_body::Data::CryptoTransfer(
         services::CryptoTransferTransactionBody {
             transfers: Some(services::TransferList {
@@ -115,11 +117,14 @@ async fn main() -> anyhow::Result<()> {
         ..Default::default()
     };
 
+    // serialize account body
     let transfer_account_bytes = transfer_transaction_body.encode_to_vec();
 
+    // sign bytes for both transfer and receive accounts
     let transfer_signature = my_account_private_key.sign(&transfer_account_bytes);
     let receive_signature = PrivateKey::from_bytes(&new_account_private_key)?.sign(&transfer_account_bytes);
     
+    // add signature pairs for both transfer and receive accounts
     let transfer_sig_pair = vec![
         services::SignaturePair {
             pub_key_prefix: my_account_public_key.to_vec(),
@@ -139,6 +144,7 @@ async fn main() -> anyhow::Result<()> {
         sig_map: Some(services::SignatureMap { sig_pair: transfer_sig_pair.clone() }),
     };
 
+    // construct the transaction
     let transfer_transaction = services::Transaction {
         signed_transaction_bytes: transfer_signed_transaction.encode_to_vec(),
         ..Default::default()
@@ -148,7 +154,7 @@ async fn main() -> anyhow::Result<()> {
 
     println!("Transfer Hbar Response: {:#?}", Some(transfer_response));
 
-    // Query Receipt for Hbar transfer to new account
+    // query Receipt for Hbar transfer to new account
     let transfer_query = services::Query {
         query: Some(services::query::Query::TransactionGetReceipt(
             services::TransactionGetReceiptQuery {
@@ -164,7 +170,7 @@ async fn main() -> anyhow::Result<()> {
 
     println!("Transfer Hbar receipt: {:#?}", &transfer_query);
 
-    // Query the new account's balance
+    // query the new account's balance
     let new_account_balance_query = services::Query {
         query: Some(services::query::Query::CryptogetAccountBalance(
             services::CryptoGetAccountBalanceQuery {
@@ -182,6 +188,7 @@ async fn main() -> anyhow::Result<()> {
         )),
     };
 
+    // query the new account's balance
     let new_account_balance_response = client.crypto_get_balance(new_account_balance_query).await?;
     
     // wait for consensus

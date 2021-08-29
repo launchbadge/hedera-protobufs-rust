@@ -49,7 +49,7 @@ fn main() -> anyhow::Result<()> {
         )
         .out_dir(&mirror_out_dir)
         .compile(
-            &["proto/mirror/ConsensusService.proto"],
+            &["proto/mirror/consensus_service.proto"],
             &["proto/mirror/", "proto/services/"],
         )?;
 
@@ -133,7 +133,7 @@ fn main() -> anyhow::Result<()> {
         .extern_path(".proto.ContractID", "crate::services::ContractId")
         .out_dir(&streams_out_dir)
         .compile(
-            &["proto/streams/AccountBalanceFile.proto"],
+            &["proto/streams/account_balance_file.proto"],
             &["proto/streams/", "proto/services/"],
         )?;
 

@@ -19,6 +19,7 @@ fn main() -> anyhow::Result<()> {
         .type_attribute("proto.ThresholdKey", "#[derive(Eq, Hash)]")
         .type_attribute("proto.TransactionID", "#[derive(Eq, Hash)]")
         .type_attribute("proto.AccountID", "#[derive(Eq, Hash)]")
+        .type_attribute("proto.AccountID.account", "#[derive(Eq, Hash)]")
         .type_attribute("proto.Timestamp", "#[derive(Eq, Hash)]")
         .type_attribute("proto.ContractID", "#[derive(Eq, Hash)]");
 

@@ -21,7 +21,8 @@ fn main() -> anyhow::Result<()> {
         .type_attribute("proto.AccountID", "#[derive(Eq, Hash)]")
         .type_attribute("proto.AccountID.account", "#[derive(Eq, Hash)]")
         .type_attribute("proto.Timestamp", "#[derive(Eq, Hash)]")
-        .type_attribute("proto.ContractID", "#[derive(Eq, Hash)]");
+        .type_attribute("proto.ContractID", "#[derive(Eq, Hash)]")
+        .type_attribute("proto.ContractID.contract", "#[derive(Eq, Hash)]");
 
     if cfg!(feature = "serde") {
         //TODO: Ideally we'd apply to everything, but that didn't work, so new types are added here on an as-needed basis

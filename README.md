@@ -20,3 +20,11 @@ _to be written_
 
 Licensed under Apache License,
 Version 2.0 – see [LICENSE](LICENSE) in this repo
+
+## Build
+
+download and install cmake
+
+`git submodule update --init`
+
+`cargo build`

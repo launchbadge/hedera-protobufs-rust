@@ -133,6 +133,8 @@ fn main() -> anyhow::Result<()> {
         .extern_path(".proto.TokenSupplyType", "crate::services::TokenSupplyType")
         .extern_path(".proto.TokenType", "crate::services::TokenType")
         .extern_path(".proto.ContractID", "crate::services::ContractId")
+        .extern_path(".proto.Transaction", "crate::services::Transaction")
+        .extern_path(".proto.TransactionRecord", "crate::services::TransactionRecord")
         .out_dir(&streams_out_dir)
         .compile(
             &[

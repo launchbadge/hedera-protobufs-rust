@@ -135,7 +135,16 @@ fn main() -> anyhow::Result<()> {
         .extern_path(".proto.ContractID", "crate::services::ContractId")
         .out_dir(&streams_out_dir)
         .compile(
-            &["proto/streams/account_balance_file.proto"],
+            &[
+                "proto/streams/account_balance_file.proto",
+                "proto/streams/contract_action.proto",
+                "proto/streams/contract_bytecode.proto",
+                "proto/streams/contract_state_change.proto",
+                "proto/streams/hash_object.proto",
+                "proto/streams/record_stream_file.proto",
+                "proto/streams/sidecar_file.proto",
+                "proto/streams/signature_file.proto",
+            ],
             &["proto/streams/", "proto/services/"],
         )?;
 
